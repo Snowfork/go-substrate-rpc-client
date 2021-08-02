@@ -19,6 +19,8 @@ package types
 import (
 	"encoding/json"
 	"math/big"
+	"strconv"
+	"strings"
 
 	"github.com/snowfork/go-substrate-rpc-client/v2/scale"
 )
@@ -37,17 +39,22 @@ type BlockNumber U32
 
 // UnmarshalJSON fills BlockNumber with the JSON encoded byte array given by bz
 func (b *BlockNumber) UnmarshalJSON(bz []byte) error {
-	var tmp U32
+	var tmp string
 	if err := json.Unmarshal(bz, &tmp); err != nil {
 		return err
 	}
-	*b = BlockNumber(tmp)
-	return nil
+
+	s := strings.TrimPrefix(tmp, "0x")
+
+	p, err := strconv.ParseUint(s, 16, 32)
+	*b = BlockNumber(p)
+	return err
 }
 
 // MarshalJSON returns a JSON encoded byte array of BlockNumber
 func (b BlockNumber) MarshalJSON() ([]byte, error) {
-	return U32(b).MarshalJSON()
+	s := strconv.FormatUint(uint64(b), 16)
+	return json.Marshal(s)
 }
 
 // Encode implements encoding for BlockNumber, which just unwraps the bytes of BlockNumber
