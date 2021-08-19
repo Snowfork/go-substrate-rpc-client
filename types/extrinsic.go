@@ -334,7 +334,7 @@ func (a *Args) Decode(decoder scale.Decoder) error {
 	return nil
 }
 
-type Justification Bytes
+type Justification []Bytes
 
 type SignaturePayload struct {
 	Address        Address
