@@ -235,4 +235,3 @@ func createKey(meta *Metadata, method, prefix string, stringKey, arg []byte, ent
 func createPrefixedKey(method, prefix string) []byte {
 	return append(xxhash.New128([]byte(prefix)).Sum(nil), xxhash.New128([]byte(method)).Sum(nil)...)
 }
-

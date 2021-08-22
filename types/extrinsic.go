@@ -336,7 +336,7 @@ func (a *Args) Decode(decoder scale.Decoder) error {
 
 type Justification []Bytes
 
-func (j Justification) EngineId() string {
+func (j Justification) EngineID() string {
 	if len(j) > 0 {
 		return string(j[0])
 	}
