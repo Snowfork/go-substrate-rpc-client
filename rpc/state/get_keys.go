@@ -31,14 +31,17 @@ func (s *State) GetKeysLatest(prefix types.StorageKey) ([]types.StorageKey, erro
 	return s.getKeys(prefix, nil)
 }
 
-func (s *State) GetKeysPaged(prefix types.StorageKey, count uint32, startKey *types.StorageKey, blockHash *types.Hash) ([]types.StorageKey, error) {
+// GetKeysPaged retreives the keys with the given prefix with paginated results
+func (s *State) GetKeysPaged(prefix types.StorageKey, //nolint:interfacer
+	count uint32, startKey *types.StorageKey, //nolint:interfacer
+	blockHash types.Hash) ([]types.StorageKey, error) {
 	var res []string
 
 	var startKeyHex string
 	if startKey != nil {
 		startKeyHex = startKey.Hex()
 	}
-	err := client.CallWithBlockHash(s.client, &res, "state_getKeysPaged", blockHash, prefix.Hex(), count, startKeyHex)
+	err := client.CallWithBlockHash(s.client, &res, "state_getKeysPaged", &blockHash, prefix.Hex(), count, startKeyHex)
 	if err != nil {
 		return nil, err
 	}
