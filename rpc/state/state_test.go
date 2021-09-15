@@ -81,6 +81,13 @@ func (s *MockSrv) GetKeys(key string, hash *string) []string {
 	return []string{mockSrv.storageKeyHex}
 }
 
+func (s *MockSrv) GetKeysPaged(key string, count uint32, startKey *string, hash *string) []string {
+	if !strings.HasPrefix(mockSrv.storageKeyHex, key) {
+		panic("key not found")
+	}
+	return []string{mockSrv.storageKeyHex}
+}
+
 func (s *MockSrv) GetStorage(key string, hash *string) string {
 	if key != s.storageKeyHex {
 		return ""
