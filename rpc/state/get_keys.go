@@ -37,9 +37,10 @@ func (s *State) GetKeysPaged(prefix types.StorageKey, //nolint:interfacer
 	blockHash types.Hash) ([]types.StorageKey, error) {
 	var res []string
 
-	var startKeyHex string
+	var startKeyHex *string
 	if startKey != nil {
-		startKeyHex = startKey.Hex()
+		hex := startKey.Hex()
+		startKeyHex = &hex
 	}
 	err := client.CallWithBlockHash(s.client, &res, "state_getKeysPaged", &blockHash, prefix.Hex(), count, startKeyHex)
 	if err != nil {
