@@ -43,3 +43,11 @@ func TestState_GetKeysPaged(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, []types.StorageKey{types.MustHexDecodeString(mockSrv.storageKeyHex)}, keys)
 }
+
+func TestState_GetKeysPagedWithStartKey(t *testing.T) {
+	prefix := types.NewStorageKey(types.MustHexDecodeString(mockSrv.storageKeyHex))[:8]
+	startKey := types.NewStorageKey(types.MustHexDecodeString(mockSrv.storageKeyHex))
+	keys, err := state.GetKeysPaged(prefix, 10, &startKey, mockSrv.blockHashLatest)
+	assert.NoError(t, err)
+	assert.Equal(t, []types.StorageKey{types.MustHexDecodeString(mockSrv.storageKeyHex)}, keys)
+}
