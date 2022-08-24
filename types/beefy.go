@@ -18,6 +18,8 @@
 package types
 
 import (
+	"fmt"
+
 	"github.com/snowfork/go-substrate-rpc-client/v4/scale"
 )
 
@@ -38,6 +40,11 @@ type Commitment struct {
 type SignedCommitment struct {
 	Commitment Commitment
 	Signatures []OptionBeefySignature
+}
+
+type VersionedFinalityProof struct {
+	IsV1 Bool
+	AsV1 SignedCommitment
 }
 
 type OptionalSignedCommitment struct {
@@ -195,6 +202,35 @@ func makeChunks(slice []byte, chunkSize int) [][]byte {
 // Used for decoding JSON-RPC subscription messages (beefy_subscribeJustifications)
 func (s *SignedCommitment) UnmarshalText(text []byte) error {
 	return DecodeFromHexString(string(text), s)
+}
+
+func (s *VersionedFinalityProof) UnmarshalText(text []byte) error {
+	return DecodeFromHexString(string(text), s)
+}
+
+func (o *VersionedFinalityProof) Encode(encoder scale.Encoder) error {
+	if !o.IsV1 {
+		return fmt.Errorf("can only encode V1")
+	}
+	err := encoder.PushByte(1)
+	if err != nil {
+		return err
+	}
+	return encoder.Encode(o.AsV1)
+}
+
+func (o *VersionedFinalityProof) Decode(decoder scale.Decoder) error {
+	tag, err := decoder.ReadOneByte()
+	if err != nil {
+		return err
+	}
+	switch tag {
+	case 1:
+		o.IsV1 = true
+		return decoder.Decode(&o.AsV1)
+	default:
+		return fmt.Errorf("can only decode V1")
+	}
 }
 
 func (o OptionalSignedCommitment) Encode(encoder scale.Encoder) error {

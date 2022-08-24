@@ -28,14 +28,14 @@ import (
 // JustificationsSubscription is a subscription established through one of the Client's subscribe methods.
 type JustificationsSubscription struct {
 	sub      *gethrpc.ClientSubscription
-	channel  chan types.SignedCommitment
+	channel  chan types.VersionedFinalityProof
 	quitOnce sync.Once // ensures quit is closed once
 }
 
 // Chan returns the subscription channel.
 //
 // The channel is closed when Unsubscribe is called on the subscription.
-func (s *JustificationsSubscription) Chan() <-chan types.SignedCommitment {
+func (s *JustificationsSubscription) Chan() <-chan types.VersionedFinalityProof {
 	return s.channel
 }
 
@@ -66,7 +66,7 @@ func (b *Beefy) SubscribeJustifications() (*JustificationsSubscription, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), config.Default().SubscribeTimeout)
 	defer cancel()
 
-	ch := make(chan types.SignedCommitment)
+	ch := make(chan types.VersionedFinalityProof)
 
 	sub, err := b.client.Subscribe(ctx, "beefy", "subscribeJustifications", "unsubscribeJustifications",
 		"justifications", ch)
