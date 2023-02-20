@@ -18,7 +18,8 @@ func (c *MMR) GenerateProofLatest(blockNumber uint32) (types.GenerateMMRProofRes
 
 func (c *MMR) generateProof(blockNumber uint32, blockHash *types.Hash) (types.GenerateMMRProofResponse, error) {
 	var res types.GenerateMMRProofResponse
-	err := client.CallWithBlockHash(c.client, &res, "mmr_generateProof", blockHash, blockNumber)
+	blocks := [1]uint32 {blockNumber}
+	err := client.CallWithBlockHash(c.client, &res, "mmr_generateProof", blockHash, blocks, blockNumber)
 	if err != nil {
 		return types.GenerateMMRProofResponse{}, err
 	}

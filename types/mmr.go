@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // GenerateMMRProofResponse contains the generate proof rpc response
@@ -15,7 +16,7 @@ type GenerateMMRProofResponse struct {
 func (d *GenerateMMRProofResponse) UnmarshalJSON(bz []byte) error {
 	var tmp struct {
 		BlockHash string `json:"blockHash"`
-		Leaf      string `json:"leaf"`
+		Leaves    string `json:"leaves"`
 		Proof     string `json:"proof"`
 	}
 	if err := json.Unmarshal(bz, &tmp); err != nil {
@@ -25,38 +26,32 @@ func (d *GenerateMMRProofResponse) UnmarshalJSON(bz []byte) error {
 	if err != nil {
 		return err
 	}
-	var encodedLeaf MMREncodableOpaqueLeaf
-	err = DecodeFromHexString(tmp.Leaf, &encodedLeaf)
+	var encodedLeaf []MMREncodableOpaqueLeaf
+	err = DecodeFromHexString(tmp.Leaves, &encodedLeaf)
 	if err != nil {
 		return err
 	}
-	err = DecodeFromBytes(encodedLeaf, &d.Leaf)
+	if encodedLeaf == nil || len(encodedLeaf) == 0 {
+		return fmt.Errorf("decode leaf error")
+	}
+
+	err = DecodeFromBytes(encodedLeaf[0], &d.Leaf)
 	if err != nil {
 		return err
 	}
-	err = DecodeFromHexString(tmp.Proof, &d.Proof)
+	var proof MultiMMRProof
+	err = DecodeFromHexString(tmp.Proof, &proof)
 	if err != nil {
 		return err
 	}
+	if proof.LeafIndices == nil || len(proof.LeafIndices) == 0 {
+		return fmt.Errorf("decode proof LeafIndices error")
+	}
+	d.Proof.LeafCount = proof.LeafCount
+	d.Proof.Items = proof.Items
+	d.Proof.LeafIndex = proof.LeafIndices[0]
 	return nil
 }
-
-// MarshalJSON returns a JSON encoded byte array of u
-// func (d GenerateMMRProofResponse) MarshalJSON() ([]byte, error) {
-// 	logs := make([]string, len(d))
-// 	var err error
-// 	for i, di := range d {
-// 		logs[i], err = EncodeToHexString(di)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 	}
-// 	return json.Marshal(struct {
-// 		Logs []string `json:"logs"`
-// 	}{
-// 		Logs: logs,
-// 	})
-// }
 
 type MMREncodableOpaqueLeaf Bytes
 
@@ -64,6 +59,16 @@ type MMREncodableOpaqueLeaf Bytes
 type MMRProof struct {
 	// The index of the leaf the proof is for.
 	LeafIndex U64
+	// Number of leaves in MMR, when the proof was generated.
+	LeafCount U64
+	// Proof elements (hashes of siblings of inner nodes on the path to the leaf).
+	Items []H256
+}
+
+// MultiMMRProof
+type MultiMMRProof struct {
+	// The indices of leaves.
+	LeafIndices []U64
 	// Number of leaves in MMR, when the proof was generated.
 	LeafCount U64
 	// Proof elements (hashes of siblings of inner nodes on the path to the leaf).
