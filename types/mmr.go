@@ -31,7 +31,7 @@ func (d *GenerateMMRProofResponse) UnmarshalJSON(bz []byte) error {
 	if err != nil {
 		return err
 	}
-	if encodedLeaf == nil || len(encodedLeaf) == 0 {
+	if len(encodedLeaf) == 0 {
 		return fmt.Errorf("decode leaf error")
 	}
 
