@@ -18,7 +18,7 @@
 Package gsrpc (Go Substrate RPC Client) provides APIs and types around Polkadot and any Substrate-based chain RPC calls.
 This client is modelled after [polkadot-js/api](https://github.com/polkadot-js/api).
 
-Calling RPC methods
+# Calling RPC methods
 
 Simply instantiate the gsrpc with a URL of your choice, e. g.
 
@@ -30,11 +30,11 @@ and run any of the provided RPC methods from the api:
 
 Further examples can be found below.
 
-Signing extrinsics
+# Signing extrinsics
 
 In order to sign extrinsics, you need to have [subkey](https://github.com/paritytech/substrate/tree/master/subkey) installed. Please make sure that you use subkey in the version of your relay chain.
 
-Types
+# Types
 
 The package [types](https://godoc.org/github.com/snowfork/go-substrate-rpc-client/v4/types/) exports a number
 of useful basic types including functions for encoding and decoding them.

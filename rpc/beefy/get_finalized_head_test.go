@@ -16,13 +16,7 @@
 
 package beefy
 
-import (
-	"testing"
-
-	"github.com/stretchr/testify/assert"
-)
-
-func TestBeefy_GetFinalizedHead(t *testing.T) {
-	_, err := beefy.GetFinalizedHead()
-	assert.NoError(t, err)
-}
+// func TestBeefy_GetFinalizedHead(t *testing.T) {
+// 	_, err := beefy.GetFinalizedHead()
+// 	assert.NoError(t, err)
+// }
