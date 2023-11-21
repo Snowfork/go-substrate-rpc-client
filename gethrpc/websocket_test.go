@@ -130,7 +130,7 @@ func TestClientWebsocketPing(t *testing.T) {
 		t.Fatalf("client dial error: %v", err)
 	}
 	resultChan := make(chan int)
-	sub, err := client.EthSubscribe(ctx, resultChan, "foo")
+	sub, err := client.Subscribe(ctx, "foo", "foo", "foo", "foo", resultChan)
 	if err != nil {
 		t.Fatalf("client subscribe error: %v", err)
 	}

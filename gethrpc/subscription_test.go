@@ -28,7 +28,7 @@ import (
 func TestNewID(t *testing.T) {
 	hexchars := "0123456789ABCDEFabcdef"
 	for i := 0; i < 100; i++ {
-		id := string(NewID())
+		id := fmt.Sprint(NewID())
 		if !strings.HasPrefix(id, "0x") {
 			t.Fatalf("invalid ID prefix, want '0x...', got %s", id)
 		}
@@ -102,7 +102,7 @@ func TestSubscriptions(t *testing.T) {
 	for !allReceived() {
 		select {
 		case confirmation := <-successes: // subscription created
-			subids[namespaces[confirmation.reqid]] = string(confirmation.subid)
+			subids[namespaces[confirmation.reqid]] = fmt.Sprint(confirmation.subid)
 		case notification := <-notifications:
 			count[fmt.Sprint(notification.ID)]++
 		case err := <-errors:
@@ -152,11 +152,11 @@ func TestServerUnsubscribe(t *testing.T) {
 	}
 
 	// Unsubscribe and check that it is handled on the server side.
-	p2.Write([]byte(`{"jsonrpc":"2.0","method":"nftest2_unsubscribe","params":["` + sub.subid + `"]}`))
+	p2.Write([]byte(`{"jsonrpc":"2.0","method":"nftest2_unsubscribe","params":["` + fmt.Sprint(sub.subid) + `"]}`))
 	for {
 		select {
 		case id := <-service.unsubscribed:
-			if id != string(sub.subid) {
+			if id != fmt.Sprint(sub.subid) {
 				t.Errorf("wrong subscription ID unsubscribed")
 			}
 			return

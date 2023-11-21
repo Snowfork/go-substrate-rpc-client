@@ -20,6 +20,7 @@ import (
 	"context"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 )
@@ -157,7 +158,7 @@ func (s *notificationTestService) SomeSubscription(ctx context.Context, n, val i
 		case <-subscription.Err():
 		}
 		if s.unsubscribed != nil {
-			s.unsubscribed <- string(subscription.ID)
+			s.unsubscribed <- fmt.Sprint(subscription.ID)
 		}
 	}()
 	return subscription, nil
