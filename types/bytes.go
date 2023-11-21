@@ -17,6 +17,7 @@
 package types
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/snowfork/go-substrate-rpc-client/v4/scale"
@@ -30,6 +31,16 @@ func NewBytes(b []byte) Bytes {
 	return Bytes(b)
 }
 
+// Hex returns a hex string representation of the value
+func (b Bytes) Hex() string {
+	return fmt.Sprintf("%#x", b[:])
+}
+
+// MarshalJSON returns a JSON encoded byte array of h
+func (b Bytes) MarshalJSON() ([]byte, error) {
+	return json.Marshal(b.Hex())
+}
+
 // BytesBare represents byte slices that will be encoded bare, i. e. without a compact length prefix. This makes it
 // impossible to decode the bytes, but is used as the payload for signing.
 type BytesBare []byte
@@ -41,7 +52,7 @@ func (b BytesBare) Encode(encoder scale.Encoder) error {
 }
 
 // Decode does nothing and always returns an error. BytesBare is only used for encoding, not for decoding
-func (b *BytesBare) Decode(decoder scale.Decoder) error {
+func (b *BytesBare) Decode(_ scale.Decoder) error {
 	return fmt.Errorf("decoding of BytesBare is not supported")
 }
 

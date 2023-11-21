@@ -36,6 +36,11 @@ func (h H160) Hex() string {
 	return fmt.Sprintf("%#x", h[:])
 }
 
+// MarshalJSON returns a JSON encoded byte array of h
+func (h H160) MarshalJSON() ([]byte, error) {
+	return json.Marshal(h.Hex())
+}
+
 // H256 is a hash containing 256 bits (32 bytes), typically used in blocks, extrinsics and as a sane default
 type H256 [32]byte
 
@@ -49,6 +54,11 @@ func NewH256(b []byte) H256 {
 // Hex returns a hex string representation of the value (not of the encoded value)
 func (h H256) Hex() string {
 	return fmt.Sprintf("%#x", h[:])
+}
+
+// MarshalJSON returns a JSON encoded byte array of h
+func (h H256) MarshalJSON() ([]byte, error) {
+	return json.Marshal(h.Hex())
 }
 
 // H512 is a hash containing 512 bits (64 bytes), typically used for signature
