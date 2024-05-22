@@ -16,13 +16,50 @@
 
 package types
 
+import "github.com/snowfork/go-substrate-rpc-client/v4/scale"
+
 type SignedBlock struct {
-	Block          Block           `json:"block"`
-	Justifications []Justification `json:"justifications"`
+	Block          Block                `json:"block"`
+	Justifications OptionJustifications `json:"justifications"`
 }
 
 // Block encoded with header and extrinsics
 type Block struct {
 	Header     Header
 	Extrinsics []Extrinsic
+}
+
+type Justification struct {
+	ConsensusEngineID [4]byte
+	EncodedJustification []byte
+}
+
+type OptionJustifications struct {
+	option
+	value []Justification
+}
+
+func (o OptionJustifications) Encode(encoder scale.Encoder) error {
+	return encoder.EncodeOption(o.hasValue, o.value)
+}
+
+func (o *OptionJustifications) Decode(decoder scale.Decoder) error {
+	return decoder.DecodeOption(&o.hasValue, &o.value)
+}
+
+// SetSome sets a value
+func (o *OptionJustifications) SetSome(value []Justification) {
+	o.hasValue = true
+	o.value = value
+}
+
+// SetNone removes a value and marks it as missing
+func (o *OptionJustifications) SetNone() {
+	o.hasValue = false
+	o.value = []Justification{}
+}
+
+// Unwrap returns a flag that indicates whether a value is present and the stored value
+func (o OptionJustifications) Unwrap() (ok bool, value []Justification) {
+	return o.hasValue, o.value
 }

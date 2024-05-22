@@ -334,22 +334,6 @@ func (a *Args) Decode(decoder scale.Decoder) error {
 	return nil
 }
 
-type Justification []Bytes
-
-func (j Justification) EngineID() string {
-	if len(j) > 0 {
-		return string(j[0])
-	}
-	return ""
-}
-
-func (j Justification) Payload() Bytes {
-	if len(j) > 1 {
-		return j[1]
-	}
-	return nil
-}
-
 type SignaturePayload struct {
 	Address        Address
 	BlockHash      Hash
