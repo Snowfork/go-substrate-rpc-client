@@ -21,6 +21,7 @@ import (
 
 	"github.com/snowfork/go-substrate-rpc-client/v4/scale"
 	"github.com/snowfork/go-substrate-rpc-client/v4/signature"
+	"github.com/snowfork/go-substrate-rpc-client/v4/types/codec"
 )
 
 // ExtrinsicPayloadV3 is a signing payload for an Extrinsic. For the final encoding, it is variable length based on
