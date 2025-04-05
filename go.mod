@@ -10,7 +10,7 @@ require (
 	github.com/google/gofuzz v1.1.1-0.20200604201612-c04b05f3adfa
 	github.com/gorilla/websocket v1.4.2
 	github.com/pierrec/xxHash v0.1.5
-	github.com/rs/cors v1.7.0
+	github.com/rs/cors v1.8.3
 	github.com/stretchr/testify v1.7.0
 	github.com/vedhavyas/go-subkey v1.0.2
 	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e
