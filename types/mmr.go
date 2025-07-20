@@ -53,6 +53,73 @@ func (d *GenerateMMRProofResponse) UnmarshalJSON(bz []byte) error {
 	return nil
 }
 
+type ProofItem struct {
+	Position U64
+	Hash     H256
+}
+
+type ProofItemMarshal struct {
+	Position uint64
+	Hash     string
+}
+
+type GenerateAncestryProofResponse struct {
+	PrevPeaks     []H256
+	PrevLeafCount U64
+	LeafCount     U64
+	Items         []ProofItem
+}
+
+// UnmarshalJSON fills u with the JSON encoded byte array given by b
+func (d *GenerateAncestryProofResponse) UnmarshalJSON(bz []byte) error {
+	var tmp struct {
+		PrevPeaks     []string         `json:"prev_peaks"`
+		PrevLeafCount uint64           `json:"prev_leaf_count"`
+		LeafCount     uint64           `json:"leaf_count"`
+		Items         [][2]interface{} `json:"items"`
+	}
+	if err := json.Unmarshal(bz, &tmp); err != nil {
+		return fmt.Errorf("unmarshal JSON: %w", err)
+	}
+
+	d.PrevPeaks = make([]H256, len(tmp.PrevPeaks))
+	for i, prevPeak := range tmp.PrevPeaks {
+		err := DecodeFromHexString(prevPeak, &d.PrevPeaks[i])
+		if err != nil {
+			return err
+		}
+	}
+
+	d.PrevLeafCount = NewU64(tmp.PrevLeafCount)
+	d.LeafCount = NewU64(tmp.LeafCount)
+
+	d.Items = make([]ProofItem, len(tmp.Items))
+	for i, item := range tmp.Items {
+		if len(item) != 2 {
+			return fmt.Errorf("invalid item %d: expected [position, hash], got %v", i, item)
+		}
+
+		// Extract position (JSON number unmarshals as float64)
+		position, ok := item[0].(float64)
+		if !ok {
+			return fmt.Errorf("invalid position in item %d: expected number, got %v", i, item[0])
+		}
+
+		// Extract hash (string)
+		hash, ok := item[1].(string)
+		if !ok {
+			return fmt.Errorf("invalid hash in item %d: expected string, got %v", i, item[1])
+		}
+
+		// Assign to d.Items
+		d.Items[i].Position = NewU64(uint64(position))
+		if err := DecodeFromHexString(hash, &d.Items[i].Hash); err != nil {
+			return fmt.Errorf("decode hash in item %d: %w", i, err)
+		}
+	}
+	return nil
+}
+
 type MMREncodableOpaqueLeaf Bytes
 
 // MMRProof is a MMR proof
