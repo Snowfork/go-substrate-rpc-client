@@ -11,7 +11,7 @@ This client is modelled after [polkadot-js/api](https://github.com/polkadot-js/a
 
 ## State
 
-This package is feature complete, but it is relatively new and might still contain bugs. We advice to use it with caution in production. It comes without any warranties, please refer to LICENCE for details.
+This package is feature complete, but it is relatively new and might still contain bugs. We advice to use it with caution in production. It comes without any warranties, please refer to LICENSE for details.
 
 ## Documentation & Usage Examples
 
